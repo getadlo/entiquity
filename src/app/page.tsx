@@ -39,18 +39,18 @@ export default function Home() {
   return (
     <div className="bg-white">
       {/* Nav */}
-      <header className="sticky top-0 z-30 border-b border-line bg-white/85 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-white/10 bg-accent">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link href="/"><Logo /></Link>
-          <nav className="hidden items-center gap-8 text-sm font-medium text-ink-soft md:flex">
-            <a href="#product" className="hover:text-ink">Product</a>
-            <a href="#ai" className="hover:text-ink">AI</a>
-            <a href="#security" className="hover:text-ink">Security</a>
-            <a href="#pricing" className="hover:text-ink">Pricing</a>
+          <Link href="/"><Logo light /></Link>
+          <nav className="hidden items-center gap-8 text-sm font-medium text-white/80 md:flex">
+            <a href="#product" className="transition hover:text-white">Product</a>
+            <a href="#ai" className="transition hover:text-white">AI</a>
+            <a href="#security" className="transition hover:text-white">Security</a>
+            <a href="#pricing" className="transition hover:text-white">Pricing</a>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/login" className="btn-ghost">Log in</Link>
-            <Link href="/signup" className="btn-primary">Start free trial</Link>
+            <Link href="/login" className="rounded-lg px-2.5 py-1.5 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white">Log in</Link>
+            <Link href="/signup" className="inline-flex items-center justify-center rounded-lg bg-bright px-4 py-2 text-sm font-semibold text-accent transition hover:bg-bright-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bright">Start free trial</Link>
           </div>
         </div>
       </header>
