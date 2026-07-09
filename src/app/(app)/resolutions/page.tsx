@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getSession, createClient } from "@/lib/supabase/server";
 import { Badge, PageHeader, Table, EmptyState, Disclaimer } from "@/components/ui";
 import { RESOLUTION_TYPES, fmtDate } from "@/lib/utils";
+import ExportButton from "@/components/export-button";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,25 @@ export default async function ResolutionsPage({ searchParams }: { searchParams: 
   return (
     <div>
       <PageHeader title="Resolutions" description="Board resolutions, consents, minutes, and certificates — drafted with AI, stored per entity."
-        actions={<Link href="/resolutions/new" className="btn-primary">Draft new</Link>} />
+        actions={<>
+          <ExportButton
+            rows={(resolutions ?? []).map((r: any) => ({
+              title: r.title,
+              entity: r.entities?.legal_name ?? "",
+              type: RESOLUTION_TYPES[r.resolution_type] ?? r.resolution_type,
+              status: r.status,
+              created: fmtDate(r.created_at),
+            }))}
+            columns={[
+              { key: "title", label: "Title" },
+              { key: "entity", label: "Entity" },
+              { key: "type", label: "Type" },
+              { key: "status", label: "Status" },
+              { key: "created", label: "Created" },
+            ]}
+            filename="entiquity-resolutions" title="Resolutions" />
+          <Link href="/resolutions/new" className="btn-primary">Draft new</Link>
+        </>} />
 
       {open && (
         <div className="card mb-6 p-6">

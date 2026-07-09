@@ -1,5 +1,6 @@
 import { getSession, createClient } from "@/lib/supabase/server";
 import { Badge, PageHeader } from "@/components/ui";
+import ExportButton from "@/components/export-button";
 import { ENTITY_STATUSES, TASK_TYPES, fmtDate, daysUntil } from "@/lib/utils";
 import Link from "next/link";
 
@@ -57,9 +58,32 @@ export default async function ReportsPage() {
     <div>
       <PageHeader title="Reports" description="Portfolio-level views across your entity book."
         actions={<>
-          <a href="/api/reports/export?report=entities" className="btn-secondary">Export entities CSV</a>
-          <a href="/api/reports/export?report=deadlines" className="btn-secondary">Export deadlines CSV</a>
-          <button className="btn-secondary" disabled title="PDF export is coming soon">Export PDF</button>
+          <ExportButton label="Export entities"
+            rows={(entities ?? []).map((e: any) => ({
+              legal_name: e.legal_name, jurisdiction: e.jurisdiction ?? "",
+              status: ENTITY_STATUSES[e.status] ?? e.status, client_matter: e.client_matter ?? "",
+            }))}
+            columns={[
+              { key: "legal_name", label: "Legal name" },
+              { key: "jurisdiction", label: "Jurisdiction" },
+              { key: "status", label: "Status" },
+              { key: "client_matter", label: "Client / matter" },
+            ]}
+            filename="entiquity-entities-report" title="Entities report" />
+          <ExportButton label="Export deadlines"
+            rows={(tasks ?? []).map((t: any) => ({
+              name: t.name, entity: entityName(t.entity_id),
+              task_type: TASK_TYPES[t.task_type] ?? t.task_type ?? "",
+              due_date: t.due_date ?? "", status: t.status ?? "",
+            }))}
+            columns={[
+              { key: "name", label: "Task" },
+              { key: "entity", label: "Entity" },
+              { key: "task_type", label: "Type" },
+              { key: "due_date", label: "Due" },
+              { key: "status", label: "Status" },
+            ]}
+            filename="entiquity-deadlines-report" title="Deadlines report" />
         </>} />
 
       <div className="grid gap-6 lg:grid-cols-2">

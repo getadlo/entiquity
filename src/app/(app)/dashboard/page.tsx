@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSession, createClient } from "@/lib/supabase/server";
 import { Badge, PageHeader, StatCard, Table, EmptyState } from "@/components/ui";
+import ExportButton from "@/components/export-button";
 import { ENTITY_STATUSES, STATUS_STYLES, TASK_STATUS_STYLES, TASK_STATUSES, fmtDate, daysUntil } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -54,9 +55,23 @@ export default async function DashboardPage() {
       <PageHeader
         title="Dashboard"
         description="Your firm's entity book at a glance."
-        actions={quickActions.map((a, i) => (
-          <Link key={a.href} href={a.href} className={i === 0 ? "btn-primary" : "btn-secondary"}>{a.label}</Link>
-        ))}
+        actions={<>
+          <ExportButton label="Export deadlines"
+            rows={[...(overdue ?? []), ...(upcoming ?? [])].map((t: any) => ({
+              name: t.name, entity: t.entities?.legal_name ?? "",
+              due_date: t.due_date ?? "", status: t.status ?? "upcoming",
+            }))}
+            columns={[
+              { key: "name", label: "Task" },
+              { key: "entity", label: "Entity" },
+              { key: "due_date", label: "Due" },
+              { key: "status", label: "Status" },
+            ]}
+            filename="entiquity-dashboard-deadlines" title="Overdue and upcoming deadlines" />
+          {quickActions.map((a, i) => (
+            <Link key={a.href} href={a.href} className={i === 0 ? "btn-primary" : "btn-secondary"}>{a.label}</Link>
+          ))}
+        </>}
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

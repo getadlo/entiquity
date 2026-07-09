@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession, createClient } from "@/lib/supabase/server";
 import { Badge, PageHeader, Table, EmptyState } from "@/components/ui";
+import ExportButton from "@/components/export-button";
 import { TASK_STATUSES, TASK_STATUS_STYLES, TASK_TYPES, fmtDate, daysUntil, cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -70,7 +71,27 @@ export default async function CalendarPage({ searchParams }: { searchParams: Rec
 
   return (
     <div>
-      <PageHeader title="Compliance calendar" description="Annual reports, franchise taxes, renewals, and reminders across every entity." />
+      <PageHeader title="Compliance calendar" description="Annual reports, franchise taxes, renewals, and reminders across every entity."
+        actions={<ExportButton
+          rows={(tasks ?? []).map((t: any) => ({
+            name: t.name,
+            entity: t.entities?.legal_name ?? "",
+            task_type: t.task_type ?? "",
+            due_date: t.due_date ?? "",
+            status: t.status ?? "",
+            priority: t.priority ?? "",
+            assigned_to: t.users?.full_name || t.users?.email || "",
+          }))}
+          columns={[
+            { key: "name", label: "Task" },
+            { key: "entity", label: "Entity" },
+            { key: "task_type", label: "Type" },
+            { key: "due_date", label: "Due" },
+            { key: "status", label: "Status" },
+            { key: "priority", label: "Priority" },
+            { key: "assigned_to", label: "Assigned to" },
+          ]}
+          filename="entiquity-compliance-calendar" title="Compliance calendar" />} />
 
       <div className="mb-4 flex flex-wrap items-center gap-1 rounded-lg border border-line bg-white p-1">
         {VIEWS.map(([key, label]) => (

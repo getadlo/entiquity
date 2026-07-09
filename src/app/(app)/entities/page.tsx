@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getSession, createClient } from "@/lib/supabase/server";
 import { Badge, PageHeader, Table, EmptyState } from "@/components/ui";
 import { ENTITY_STATUSES, ENTITY_TYPES, STATUS_STYLES, fmtDate } from "@/lib/utils";
+import ExportButton from "@/components/export-button";
 
 export const dynamic = "force-dynamic";
 
@@ -37,10 +38,32 @@ export default async function EntitiesPage({ searchParams }: { searchParams: Rec
     return `/entities?${s.toString()}`;
   };
 
+  const exportRows = (entities ?? []).map((e: any) => ({
+    legal_name: e.legal_name,
+    entity_type: ENTITY_TYPES[e.entity_type] ?? e.entity_type,
+    jurisdiction: e.jurisdiction ?? "",
+    formation_date: e.formation_date ?? "",
+    client_matter: e.client_matter ?? "",
+    status: ENTITY_STATUSES[e.status] ?? e.status,
+    tags: (e.tags ?? []).join(", "),
+  }));
+  const exportColumns = [
+    { key: "legal_name", label: "Legal name" },
+    { key: "entity_type", label: "Type" },
+    { key: "jurisdiction", label: "Jurisdiction" },
+    { key: "formation_date", label: "Formed" },
+    { key: "client_matter", label: "Client / matter" },
+    { key: "status", label: "Status" },
+    { key: "tags", label: "Tags" },
+  ];
+
   return (
     <div>
       <PageHeader title="Entities" description={`${entities?.length ?? 0} entit${(entities?.length ?? 0) === 1 ? "y" : "ies"}${q ? ` matching "${q}"` : ""}`}
-        actions={<Link href="/entities/new" className="btn-primary">Add entity</Link>} />
+        actions={<>
+          <ExportButton rows={exportRows} columns={exportColumns} filename="entiquity-entities" title="Entities" />
+          <Link href="/entities/new" className="btn-primary">Add entity</Link>
+        </>} />
 
       {/* Filters */}
       <form className="mb-4 grid gap-2 sm:grid-cols-4" action="/entities" method="get">

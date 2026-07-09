@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getSession, createClient } from "@/lib/supabase/server";
 import { Badge, PageHeader, Table, EmptyState } from "@/components/ui";
 import { fmtDate } from "@/lib/utils";
+import ExportButton from "@/components/export-button";
 
 export const dynamic = "force-dynamic";
 
@@ -69,7 +70,21 @@ export default async function ClientsPage() {
   return (
     <div>
       <PageHeader title="Clients"
-        description="Invite clients to a secure portal, then share specific entities, documents, and reminders. Internal notes are never shared." />
+        description="Invite clients to a secure portal, then share specific entities, documents, and reminders. Internal notes are never shared."
+        actions={<ExportButton
+          rows={(access ?? []).map((a: any) => ({
+            client: a.users?.full_name || a.users?.email || "",
+            entity: a.entities?.legal_name ?? "",
+            can_upload: a.can_upload ? "Yes" : "No",
+            shared: fmtDate(a.created_at),
+          }))}
+          columns={[
+            { key: "client", label: "Client" },
+            { key: "entity", label: "Entity" },
+            { key: "can_upload", label: "Can upload" },
+            { key: "shared", label: "Shared" },
+          ]}
+          filename="entiquity-client-access" title="Client portal access" />} />
 
       <div className="grid gap-6 lg:grid-cols-[1fr,340px]">
         <div className="space-y-6">

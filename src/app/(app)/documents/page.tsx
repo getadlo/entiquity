@@ -2,6 +2,7 @@ import { getSession, createClient } from "@/lib/supabase/server";
 import { Badge, PageHeader, Table, EmptyState } from "@/components/ui";
 import { DOC_CATEGORIES, fmtBytes, fmtDate } from "@/lib/utils";
 import DocumentUpload from "@/components/document-upload";
+import ExportButton from "@/components/export-button";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -20,9 +21,27 @@ export default async function DocumentsPage({ searchParams }: { searchParams: Re
   if (category) query = query.eq("category", category);
   const { data: docs } = await query;
 
+  const exportRows = (docs ?? []).map((d: any) => ({
+    name: d.name,
+    entity: d.entities?.legal_name ?? "",
+    category: DOC_CATEGORIES[d.category] ?? d.category ?? "",
+    size: fmtBytes(d.size_bytes),
+    uploaded: fmtDate(d.created_at),
+    shared_with_client: d.shared_with_client ? "Yes" : "No",
+  }));
+  const exportColumns = [
+    { key: "name", label: "Document" },
+    { key: "entity", label: "Entity" },
+    { key: "category", label: "Category" },
+    { key: "size", label: "Size" },
+    { key: "uploaded", label: "Uploaded" },
+    { key: "shared_with_client", label: "Shared with client" },
+  ];
+
   return (
     <div>
-      <PageHeader title="Documents" description="Every file across every entity — searchable by name and content." />
+      <PageHeader title="Documents" description="Every file across every entity — searchable by name and content."
+        actions={<ExportButton rows={exportRows} columns={exportColumns} filename="entiquity-documents" title="Documents" />} />
       <div className="mb-4"><DocumentUpload orgId={orgId} /></div>
       <form className="mb-4 flex flex-wrap gap-2" action="/documents" method="get">
         <input name="q" defaultValue={q} className="input max-w-sm" placeholder="Search file names and document text…" aria-label="Search documents" />
