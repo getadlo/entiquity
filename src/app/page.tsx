@@ -1,9 +1,10 @@
 import Link from "next/link";
+import HeroShowcase from "@/components/hero-showcase";
 import { Logo } from "@/components/shell";
 import { PLANS } from "@/lib/plans";
 
 const FEATURES = [
-  { title: "Entity database", body: "Every entity, jurisdiction, EIN, registered agent, address, and relationship — searchable in one place, with parent–subsidiary structure built in." },
+  { title: "Entity database", body: "Every entity, jurisdiction, EIN, address, and ownership relationship — searchable in one place, with fund and subsidiary structures built in." },
   { title: "Document management", body: "Formation documents, operating agreements, filings, and consents organized by entity and category, with previews and secure signed links." },
   { title: "Compliance calendar", body: "Annual reports, franchise taxes, and RA renewals with owners, priorities, reminder schedules, and an overdue view nothing escapes." },
   { title: "Ownership records", body: "Cap-style ownership tracking with percentages, units, effective dates, and a visual chart of who owns what through which entity." },
@@ -66,8 +67,8 @@ export default function Home() {
               Entity management,<br /><em className="text-accent">intelligently organized.</em>
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-soft">
-              entiquity helps law firms and legal teams manage entities, filings, ownership
-              records, documents, deadlines, and resolutions in one secure AI-powered workspace.
+              The AI-powered workspace where fund sponsors, real estate teams, and legal
+              departments manage every entity, org chart, filing, and document — without the spreadsheet sprawl.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link href="/signup" className="btn-primary px-6 py-3 text-base">Start free trial</Link>
@@ -76,33 +77,8 @@ export default function Home() {
             <p className="mt-4 text-xs text-ink-faint">14-day trial · No credit card required · Cancel anytime</p>
           </div>
 
-          {/* Product mock: entity register */}
-          <div className="card overflow-hidden">
-            <div className="flex items-center justify-between border-b border-line bg-canvas/60 px-4 py-3">
-              <span className="text-sm font-semibold">Entities</span>
-              <span className="badge bg-accent-soft to-accent text-accent">248 active</span>
-            </div>
-            <div className="divide-y divide-line text-sm">
-              {[
-                ["Acme Holdings LLC", "Delaware · LLC", "Franchise tax in 18 days", "Active"],
-                ["BluePine Ventures, Inc.", "Delaware · Corp", "Annual report in 63 days", "Active"],
-                ["Northloop Realty LLC", "Illinois · LLC", "Reinstatement overdue", "Suspended"],
-                ["Kestrel Analytics Ltd.", "UK · Foreign", "GA qualification in 6 days", "Pending"],
-              ].map(([name, meta, due, status]) => (
-                <div key={name} className="flex items-center justify-between gap-3 px-4 py-3">
-                  <div className="min-w-0">
-                    <div className="truncate font-medium">{name}</div>
-                    <div className="text-xs text-ink-faint">{meta}</div>
-                  </div>
-                  <div className="hidden text-xs text-ink-soft sm:block">{due}</div>
-                  <span className={`badge ${status === "Active" ? "bg-accent-soft text-accent" : status === "Suspended" ? "bg-red-50 text-danger" : "bg-amber-50 text-warn"}`}>{status}</span>
-                </div>
-              ))}
-            </div>
-            <div className="bg-accent px-4 py-3 text-xs text-white/80">
-              <span className="font-medium text-bright">entiquity Assistant:</span> 3 entities are missing operating agreements — review suggested.
-            </div>
-          </div>
+          {/* Animated product showcase */}
+          <HeroShowcase />
         </div>
       </section>
 
@@ -113,8 +89,8 @@ export default function Home() {
             Every entity. Every filing. Every document.<br className="hidden sm:block" /> One intelligent workspace.
           </h2>
           <p className="mt-3 max-w-2xl text-ink-soft">
-            Built for solo attorneys, corporate practice groups, in-house legal teams, and
-            registered agent services who manage entities for clients — and can't afford to miss a deadline.
+            Built for private equity fund sponsors, real estate platforms, business operations,
+            in-house legal teams, and law firms who manage complex entity structures — and can't afford to miss a deadline.
           </p>
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
@@ -187,15 +163,15 @@ export default function Home() {
       {/* Use cases */}
       <section className="py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <h2 className="font-display text-3xl font-semibold tracking-tight">Built for the people who keep entities in good standing</h2>
+          <h2 className="font-display text-3xl font-semibold tracking-tight">Built for the people who run complex structures</h2>
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              ["Solo attorneys", "Run a tight entity practice without a back office — reminders, drafting, and records handled."],
-              ["Boutique corporate firms", "A shared source of truth for every client entity across the whole team."],
-              ["Mid-sized firms", "Practice-group-scale entity management with roles, audit trails, and reporting."],
-              ["Entity management paralegals", "Assigned-to-me views, reminder schedules, and one-click resolution drafts."],
-              ["In-house legal teams", "Track the subsidiary tree, ownership, and every filing across jurisdictions."],
-              ["Registered agent services", "Manage renewals and client documents at volume, with a portal clients love."],
+              ["Private equity fund sponsors", "A named org chart per fund — GPs, LPs, holdcos, and portfolio companies with every ownership percentage mapped."],
+              ["Real estate teams", "Track every property LLC, JV, and TIC across jurisdictions, with filings and key documents attached to each."],
+              ["Business operations", "One source of truth for the whole entity stack — formations, EINs, good standing, and who owns what."],
+              ["In-house legal teams", "The full subsidiary tree, ownership records, and every filing deadline across jurisdictions in one view."],
+              ["Law firms", "Manage entities for every client with roles, audit trails, AI drafting, and a portal clients love."],
+              ["Family offices & holdcos", "Trusts, individuals, and entities on one chart — with clean exports for lenders, auditors, and counsel."],
             ].map(([t, b]) => (
               <div key={t} className="rounded-card border border-line p-6">
                 <h3 className="font-semibold">{t}</h3>
@@ -207,8 +183,8 @@ export default function Home() {
           {/* Testimonials placeholder */}
           <div className="mt-14 grid gap-5 lg:grid-cols-3">
             {[
-              ["“Testimonial placeholder — a managing partner on replacing spreadsheets with entiquity.”", "Managing Partner, corporate boutique"],
-              ["“Testimonial placeholder — a paralegal on never missing a franchise tax deadline again.”", "Senior Paralegal, mid-sized firm"],
+              ["“Testimonial placeholder — a fund CFO on mapping ten funds' structures in an afternoon.”", "CFO, private equity sponsor"],
+              ["“Testimonial placeholder — an ops lead on never missing a franchise tax deadline again.”", "Director of Operations, real estate platform"],
               ["“Testimonial placeholder — a GC on visibility across a 60-entity subsidiary tree.”", "General Counsel, growth-stage company"],
             ].map(([q, who]) => (
               <figure key={who} className="card p-6">

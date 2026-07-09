@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { cn, ENTITY_TYPES, ENTITY_STATUSES, fmtDate } from "@/lib/utils";
 import {
   addEntityNode, addOwnershipLink, deleteOwnershipLink, deletePersonOwner,
-  deleteEntityNode, commitExtractedChart,
+  deleteEntityNode, commitExtractedChart, createChart, renameChart, deleteChart,
+  addEntityToChart, removeEntityFromChart,
 } from "@/app/(app)/org-chart/actions";
 
 /* ---------- types ---------- */
@@ -112,8 +113,13 @@ function buildGraph(entities: EntityRow[], ownership: OwnRow[]) {
 }
 
 /* ---------- component ---------- */
-export default function OrgChartView({ entities, ownership }: { entities: EntityRow[]; ownership: OwnRow[] }) {
+type Chart = { id: string; name: string; description: string | null };
+
+export default function OrgChartView({ entities, allEntities, ownership, charts, activeChart }: {
+  entities: EntityRow[]; allEntities: EntityRow[]; ownership: OwnRow[]; charts: Chart[]; activeChart: string | null;
+}) {
   const router = useRouter();
+  const current = activeChart ? charts.find((c) => c.id === activeChart) ?? null : null;
   const { nodes, edges } = useMemo(() => buildGraph(entities, ownership), [entities, ownership]);
   const nodeList = Array.from(nodes.values());
 
@@ -185,10 +191,53 @@ export default function OrgChartView({ entities, ownership }: { entities: Entity
 
   return (
     <div>
+      {/* Chart switcher */}
+      <div className="mb-3 flex flex-wrap items-center gap-1 rounded-lg border border-line bg-white p-1">
+        <button onClick={() => router.push("/org-chart")}
+          className={cn("rounded-md px-3 py-1.5 text-sm font-medium transition",
+            !activeChart ? "bg-accent-soft text-accent" : "text-ink-soft hover:text-ink")}>
+          All entities
+        </button>
+        {charts.map((c) => (
+          <button key={c.id} onClick={() => router.push(`/org-chart?chart=${c.id}`)}
+            className={cn("rounded-md px-3 py-1.5 text-sm font-medium transition",
+              activeChart === c.id ? "bg-accent-soft text-accent" : "text-ink-soft hover:text-ink")}>
+            {c.name}
+          </button>
+        ))}
+        <button
+          onClick={async () => {
+            const name = prompt("Name the new chart (e.g. \"Fund II\", \"Sunset Plaza JV\"):");
+            if (!name?.trim()) return;
+            const r: any = await createChart(name);
+            if (r?.error) setErr(r.error);
+            else router.push(`/org-chart?chart=${r.id}`);
+          }}
+          className="rounded-md px-3 py-1.5 text-sm font-medium text-accent transition hover:bg-accent-soft">
+          + New chart
+        </button>
+        {current && (
+          <span className="ml-auto flex items-center gap-1">
+            <button className="btn-ghost text-xs" onClick={async () => {
+              const name = prompt("Rename chart:", current.name);
+              if (!name?.trim() || name === current.name) return;
+              const r: any = await renameChart(current.id, name);
+              if (r?.error) setErr(r.error); else router.refresh();
+            }}>Rename</button>
+            <button className="btn-ghost text-xs text-danger" onClick={async () => {
+              if (!confirm(`Delete the chart "${current.name}"? The entities on it are NOT deleted — they stay in your workspace and on other charts.`)) return;
+              const r: any = await deleteChart(current.id);
+              if (r?.error) setErr(r.error); else router.push("/org-chart");
+            }}>Delete chart</button>
+          </span>
+        )}
+      </div>
+
       {/* Toolbar */}
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <button className="btn-primary" onClick={() => { setPanel("add-entity"); setSelected(null); }}>Add entity</button>
         <button className="btn-secondary" onClick={() => { setPanel("add-link"); setSelected(null); }}>Add owner / link</button>
+        {current && <AddExistingPicker current={current} entities={entities} allEntities={allEntities} onError={setErr} />}
         <button className="btn-secondary" onClick={() => { setPanel("import"); setSelected(null); }}>
           <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden><path d="M10 13V4m0 0L6.5 7.5M10 4l3.5 3.5M4 16h12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
           Import from file (AI)
@@ -284,6 +333,10 @@ export default function OrgChartView({ entities, ownership }: { entities: Entity
 
             {panel === "details" && sel && (
               <NodeDetails node={sel} owners={selOwners} holdings={selHoldings} nodes={nodes} busy={busy}
+                chartName={current?.name ?? null}
+                onRemoveFromChart={current && sel.kind === "entity" ? () => {
+                  act(() => removeEntityFromChart(current.id, sel.id), "Removed from this chart.").then(() => { setSelected(null); setPanel(null); });
+                } : undefined}
                 onDeleteLink={(id) => { if (confirm("Remove this ownership link?")) act(() => deleteOwnershipLink(id), "Link removed."); }}
                 onDeleteNode={() => {
                   if (sel.kind === "entity") {
@@ -298,7 +351,7 @@ export default function OrgChartView({ entities, ownership }: { entities: Entity
             )}
 
             {panel === "add-entity" && (
-              <AddEntityForm busy={busy} onSubmit={(v) => act(() => addEntityNode(v), "Entity added to the chart.").then((r: any) => { if (!r?.error) setPanel(null); })} />
+              <AddEntityForm busy={busy} onSubmit={(v) => act(() => addEntityNode({ ...v, chart_id: activeChart }), "Entity added to the chart.").then((r: any) => { if (!r?.error) setPanel(null); })} />
             )}
 
             {panel === "add-link" && (
@@ -307,7 +360,7 @@ export default function OrgChartView({ entities, ownership }: { entities: Entity
             )}
 
             {panel === "import" && (
-              <ImportPanel onDone={(m) => { setMsg(m); setPanel(null); router.refresh(); }} />
+              <ImportPanel chartId={activeChart} onDone={(m) => { setMsg(m); setPanel(null); router.refresh(); }} />
             )}
           </aside>
         )}
@@ -318,9 +371,10 @@ export default function OrgChartView({ entities, ownership }: { entities: Entity
 }
 
 /* ---------- details panel ---------- */
-function NodeDetails({ node, owners, holdings, nodes, busy, onDeleteLink, onDeleteNode, onAddLinkHere }: {
+function NodeDetails({ node, owners, holdings, nodes, busy, onDeleteLink, onDeleteNode, onAddLinkHere, onRemoveFromChart, chartName }: {
   node: Node; owners: Edge[]; holdings: Edge[]; nodes: Map<string, Node>; busy: boolean;
   onDeleteLink: (id: string) => void; onDeleteNode: () => void; onAddLinkHere: () => void;
+  onRemoveFromChart?: () => void; chartName?: string | null;
 }) {
   const e = node.entity;
   return (
@@ -382,6 +436,11 @@ function NodeDetails({ node, owners, holdings, nodes, busy, onDeleteLink, onDele
       <div className="flex flex-col gap-2 border-t border-line pt-3">
         {e && <Link href={`/entities/${e.id}`} className="btn-secondary w-full">Open full entity profile</Link>}
         <button className="btn-secondary w-full" onClick={onAddLinkHere}>Add owner / link</button>
+        {onRemoveFromChart && (
+          <button className="btn-secondary w-full" disabled={busy} onClick={onRemoveFromChart}>
+            Remove from “{chartName}” only
+          </button>
+        )}
         <button className="w-full rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-danger transition hover:bg-red-50" disabled={busy} onClick={onDeleteNode}>
           {node.kind === "entity" ? "Delete entity" : "Remove owner from chart"}
         </button>
@@ -483,7 +542,7 @@ function AddLinkForm({ entities, busy, defaultOwned, onSubmit }: {
 }
 
 /* ---------- AI import ---------- */
-function ImportPanel({ onDone }: { onDone: (msg: string) => void }) {
+function ImportPanel({ chartId, onDone }: { chartId: string | null; onDone: (msg: string) => void }) {
   const [stage, setStage] = useState<"pick" | "extracting" | "review" | "saving">("pick");
   const [error, setError] = useState<string | null>(null);
   const [nodes, setNodes] = useState<DraftNode[]>([]);
@@ -504,7 +563,7 @@ function ImportPanel({ onDone }: { onDone: (msg: string) => void }) {
 
   async function save() {
     setStage("saving"); setError(null);
-    const r = await commitExtractedChart({ nodes, links });
+    const r = await commitExtractedChart({ nodes, links, chart_id: chartId });
     if ((r as any).error) { setError((r as any).error); setStage("review"); return; }
     const { created, added, skipped } = r as any;
     onDone(`Chart imported: ${created} entit${created === 1 ? "y" : "ies"} created, ${added} link${added === 1 ? "" : "s"} added${skipped ? `, ${skipped} duplicate${skipped === 1 ? "" : "s"} skipped` : ""}.`);
@@ -610,5 +669,31 @@ function ImportPanel({ onDone }: { onDone: (msg: string) => void }) {
         </button>
       </div>
     </div>
+  );
+}
+
+
+/* ---------- add an existing entity to the active chart ---------- */
+function AddExistingPicker({ current, entities, allEntities, onError }: {
+  current: { id: string; name: string }; entities: EntityRow[]; allEntities: EntityRow[]; onError: (e: string | null) => void;
+}) {
+  const router = useRouter();
+  const onChart = new Set(entities.map((e) => e.id));
+  const candidates = allEntities.filter((e) => !onChart.has(e.id));
+  if (!candidates.length) return null;
+  return (
+    <select
+      className="input w-auto"
+      value=""
+      aria-label={`Add an existing entity to ${current.name}`}
+      onChange={async (e) => {
+        const id = e.target.value;
+        if (!id) return;
+        const r: any = await addEntityToChart(current.id, id);
+        if (r?.error) onError(r.error); else router.refresh();
+      }}>
+      <option value="">Add existing entity to this chart…</option>
+      {candidates.map((c) => <option key={c.id} value={c.id}>{c.legal_name}</option>)}
+    </select>
   );
 }

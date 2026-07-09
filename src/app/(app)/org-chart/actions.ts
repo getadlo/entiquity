@@ -15,7 +15,7 @@ async function log(supabase: any, orgId: string, userId: string, action: string,
 
 /** Create a new entity from the chart toolbar. */
 export async function addEntityNode(input: {
-  legal_name: string; entity_type: string; jurisdiction?: string | null; status?: string | null;
+  legal_name: string; entity_type: string; jurisdiction?: string | null; status?: string | null; chart_id?: string | null;
 }) {
   const { session, orgId, supabase } = await requireMember();
   const name = input.legal_name?.trim();
@@ -29,6 +29,9 @@ export async function addEntityNode(input: {
     created_by: session.user.id,
   }).select("id").single();
   if (error) return { error: error.message };
+  if (input.chart_id) {
+    await supabase.from("org_chart_entities").upsert({ chart_id: input.chart_id, entity_id: data.id });
+  }
   await log(supabase, orgId, session.user.id, "entity.created", `Created ${name} from the org chart`);
   revalidatePath("/org-chart");
   return { id: data.id };
@@ -112,10 +115,69 @@ export async function deleteEntityNode(id: string) {
   return { ok: true };
 }
 
+
+/** ----- Named charts (e.g., one per fund) ----- */
+
+export async function createChart(name: string, description?: string | null) {
+  const { session, orgId, supabase } = await requireMember();
+  const n = name?.trim();
+  if (!n) return { error: "Give the chart a name." };
+  const { data, error } = await supabase.from("org_charts").insert({
+    organization_id: orgId, name: n, description: description?.trim() || null, created_by: session.user.id,
+  }).select("id").single();
+  if (error) return { error: error.message };
+  await log(supabase, orgId, session.user.id, "orgchart.created", `Created chart "${n}"`);
+  revalidatePath("/org-chart");
+  return { id: data.id };
+}
+
+export async function renameChart(id: string, name: string) {
+  const { session, orgId, supabase } = await requireMember();
+  const n = name?.trim();
+  if (!n) return { error: "Give the chart a name." };
+  const { error } = await supabase.from("org_charts").update({ name: n }).eq("id", id).eq("organization_id", orgId);
+  if (error) return { error: error.message };
+  await log(supabase, orgId, session.user.id, "orgchart.renamed", `Renamed chart to "${n}"`);
+  revalidatePath("/org-chart");
+  return { ok: true };
+}
+
+export async function deleteChart(id: string) {
+  const { session, orgId, supabase } = await requireMember();
+  const { data: c } = await supabase.from("org_charts").select("id, name").eq("id", id).eq("organization_id", orgId).maybeSingle();
+  if (!c) return { error: "Chart not found." };
+  const { error } = await supabase.from("org_charts").delete().eq("id", id);
+  if (error) return { error: error.message };
+  await log(supabase, orgId, session.user.id, "orgchart.deleted", `Deleted chart "${c.name}" (entities were not deleted)`);
+  revalidatePath("/org-chart");
+  return { ok: true };
+}
+
+export async function addEntityToChart(chartId: string, entityId: string) {
+  const { orgId, supabase } = await requireMember();
+  const { data: c } = await supabase.from("org_charts").select("id").eq("id", chartId).eq("organization_id", orgId).maybeSingle();
+  if (!c) return { error: "Chart not found." };
+  const { error } = await supabase.from("org_chart_entities").upsert({ chart_id: chartId, entity_id: entityId });
+  if (error) return { error: error.message };
+  revalidatePath("/org-chart");
+  return { ok: true };
+}
+
+export async function removeEntityFromChart(chartId: string, entityId: string) {
+  const { orgId, supabase } = await requireMember();
+  const { data: c } = await supabase.from("org_charts").select("id").eq("id", chartId).eq("organization_id", orgId).maybeSingle();
+  if (!c) return { error: "Chart not found." };
+  const { error } = await supabase.from("org_chart_entities").delete().eq("chart_id", chartId).eq("entity_id", entityId);
+  if (error) return { error: error.message };
+  revalidatePath("/org-chart");
+  return { ok: true };
+}
+
 /** Commit a reviewed AI-extracted draft: create missing entities, then links. */
 export async function commitExtractedChart(draft: {
   nodes: { name: string; kind: string; entity_type?: string | null; jurisdiction?: string | null; existing_id?: string | null }[];
   links: { owner: string; owned: string; percentage?: number | null; share_class?: string | null }[];
+  chart_id?: string | null;
 }) {
   const { session, orgId, supabase } = await requireMember();
   const nodes = (draft.nodes ?? []).filter((n) => n.name?.trim());
@@ -180,6 +242,17 @@ export async function commitExtractedChart(draft: {
     added++;
   }
 
+  if (draft.chart_id) {
+    const { data: chart } = await supabase.from("org_charts").select("id").eq("id", draft.chart_id).eq("organization_id", orgId).maybeSingle();
+    if (chart) {
+      // Only entities named in this draft join the chart
+      const draftNames = new Set(nodes.map((n) => norm(n.name)));
+      const rows = Array.from(byName.entries())
+        .filter(([k]) => draftNames.has(k))
+        .map(([, eid]) => ({ chart_id: draft.chart_id!, entity_id: eid }));
+      if (rows.length) await supabase.from("org_chart_entities").upsert(rows);
+    }
+  }
   await log(supabase, orgId, session.user.id, "orgchart.imported",
     `AI import: ${created} entit${created === 1 ? "y" : "ies"} created, ${added} ownership link${added === 1 ? "" : "s"} added`);
   revalidatePath("/org-chart");
