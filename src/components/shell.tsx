@@ -19,8 +19,8 @@ const NAV = [
 
 export function Logo({ light }: { light?: boolean }) {
   return (
-    <span className={cn("font-display text-lg font-semibold tracking-tight", light ? "text-white" : "text-ink")}>
-      enti<span className="text-accent">quity</span>
+    <span className={cn("font-display text-xl font-medium lowercase tracking-tight", light ? "text-bright" : "text-accent")}>
+      entiquity
     </span>
   );
 }
@@ -46,7 +46,7 @@ export default function AppShell({
           <Link key={item.href} href={item.href} onClick={() => setOpen(false)}
             className={cn(
               "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition",
-              active ? "bg-accent-soft text-accent" : "text-ink-soft hover:bg-canvas hover:text-ink"
+              active ? "bg-white/10 text-bright" : "text-white/70 hover:bg-white/5 hover:text-white"
             )}>
             <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden>
               <path d={item.icon} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -62,20 +62,20 @@ export default function AppShell({
     <div className="flex min-h-screen bg-canvas">
       {/* Sidebar */}
       <aside className={cn(
-        "fixed inset-y-0 left-0 z-40 flex w-60 flex-col border-r border-line bg-white transition-transform lg:static lg:translate-x-0",
+        "fixed inset-y-0 left-0 z-40 flex w-60 flex-col bg-accent transition-transform lg:static lg:translate-x-0",
         open ? "translate-x-0" : "-translate-x-full"
       )}>
-        <div className="flex h-16 items-center px-6"><Link href="/dashboard"><Logo /></Link></div>
+        <div className="flex h-16 items-center px-6"><Link href="/dashboard"><Logo light /></Link></div>
         {nav}
-        <div className="border-t border-line p-4">
-          <div className="truncate text-sm font-medium">{orgName}</div>
+        <div className="border-t border-white/10 p-4">
+          <div className="truncate text-sm font-medium text-white">{orgName}</div>
           <div className="mt-0.5 flex items-center justify-between gap-2">
-            <span className="truncate text-xs text-ink-faint">{userEmail} · {role}</span>
-            <button onClick={signOut} className="text-xs font-medium text-ink-soft hover:text-danger">Sign out</button>
+            <span className="truncate text-xs text-white/50">{userEmail} · {role}</span>
+            <button onClick={signOut} className="text-xs font-medium text-white/60 hover:text-bright">Sign out</button>
           </div>
         </div>
       </aside>
-      {open && <button aria-label="Close menu" className="fixed inset-0 z-30 bg-ink/30 lg:hidden" onClick={() => setOpen(false)} />}
+      {open && <button aria-label="Close menu" className="fixed inset-0 z-30 bg-ink/40 lg:hidden" onClick={() => setOpen(false)} />}
 
       {/* Main */}
       <div className="flex min-w-0 flex-1 flex-col">

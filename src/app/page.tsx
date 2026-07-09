@@ -60,10 +60,10 @@ export default function Home() {
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr,1fr]">
           <div>
             <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 text-xs font-medium text-ink-soft">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent" /> The modern operating system for entity management
+              <span className="h-1.5 w-1.5 rounded-full bg-bright" /> The modern operating system for entity management
             </p>
             <h1 className="font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
-              Entity management,<br />intelligently organized.
+              Entity management,<br /><em className="text-accent">intelligently organized.</em>
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-soft">
               entiquity helps law firms and legal teams manage entities, filings, ownership
@@ -99,8 +99,8 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <div className="border-t border-line bg-canvas/60 px-4 py-3 text-xs text-ink-soft">
-              <span className="font-medium text-accent">entiquity Assistant:</span> 3 entities are missing operating agreements — review suggested.
+            <div className="bg-accent px-4 py-3 text-xs text-white/80">
+              <span className="font-medium text-bright">entiquity Assistant:</span> 3 entities are missing operating agreements — review suggested.
             </div>
           </div>
         </div>
@@ -162,11 +162,11 @@ export default function Home() {
       </section>
 
       {/* Security */}
-      <section id="security" className="border-t border-line bg-[#0E1626] py-20 text-white">
+      <section id="security" className="border-t border-line bg-accent py-20 text-white">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <p className="text-xs font-semibold uppercase tracking-widest text-accent-ring">Secure by design</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-bright">Secure by design</p>
           <h2 className="mt-2 font-display text-3xl font-semibold tracking-tight">
-            Legal-grade trust, engineered in.
+            Legal-grade trust, <span className="text-bright">engineered in</span>.
           </h2>
           <div className="mt-10 grid gap-8 text-sm sm:grid-cols-2 lg:grid-cols-4">
             {[
@@ -271,12 +271,12 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="border-t border-line bg-canvas/50 py-20 text-center">
+      <section className="bg-accent py-20 text-center text-white">
         <div className="mx-auto max-w-2xl px-4">
-          <h2 className="font-display text-3xl font-semibold tracking-tight">Bring order to your entity book this week.</h2>
+          <h2 className="font-display text-3xl font-semibold tracking-tight">Bring order to your entity book <span className="text-bright">this week</span>.</h2>
           <div className="mt-6 flex justify-center gap-3">
-            <Link href="/signup" className="btn-primary px-6 py-3 text-base">Start free trial</Link>
-            <Link href="/signup?demo=1" className="btn-secondary px-6 py-3 text-base">Request demo</Link>
+            <Link href="/signup" className="inline-flex items-center justify-center rounded-lg bg-bright px-6 py-3 text-base font-semibold text-accent transition hover:bg-bright-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bright">Start free trial</Link>
+            <Link href="/signup?demo=1" className="inline-flex items-center justify-center rounded-lg border border-white/25 px-6 py-3 text-base font-medium text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bright">Request demo</Link>
           </div>
         </div>
       </section>

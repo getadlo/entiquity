@@ -6,18 +6,22 @@ const config: Config = {
     extend: {
       colors: {
         ink: {
-          DEFAULT: "#101A2B",   // deep navy-charcoal text
-          soft: "#42506B",      // secondary text
-          faint: "#71809B",     // tertiary text
+          DEFAULT: "#0D1B16",   // near-black with a green cast
+          soft: "#44564E",      // secondary text
+          faint: "#71837B",     // tertiary text
         },
         accent: {
-          DEFAULT: "#0E7566",   // patina teal — calm, legal-grade
-          hover: "#0A5F53",
-          soft: "#E7F3F0",
-          ring: "#B8DCD4",
+          DEFAULT: "#08312A",   // deep pine green — brand anchor
+          hover: "#052019",
+          soft: "#E4F7EC",      // pale green tint for badges / active fills
+          ring: "#8BEFBE",
         },
-        line: "#E6E9EF",        // subtle gray borders
-        canvas: "#F7F8FA",      // app background wash
+        bright: {
+          DEFAULT: "#00E47C",   // electric green — highlights on dark surfaces
+          soft: "#66F2AE",
+        },
+        line: "#E3E9E5",        // subtle green-gray borders
+        canvas: "#F5F8F6",      // app background wash
         danger: "#B3372F",
         warn: "#9A6B15",
       },
@@ -26,8 +30,8 @@ const config: Config = {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
       },
       boxShadow: {
-        card: "0 1px 2px rgba(16,26,43,0.05), 0 4px 16px rgba(16,26,43,0.05)",
-        pop: "0 8px 30px rgba(16,26,43,0.12)",
+        card: "0 1px 2px rgba(8,49,42,0.05), 0 4px 16px rgba(8,49,42,0.05)",
+        pop: "0 8px 30px rgba(8,49,42,0.12)",
       },
       borderRadius: { card: "14px" },
     },
