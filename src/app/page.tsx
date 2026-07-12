@@ -277,8 +277,8 @@ export default function Home() {
         <div aria-hidden className="pointer-events-none absolute -bottom-10 left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-display text-[11rem] font-semibold lowercase leading-none tracking-tight text-white/[0.04]">
           entiquity
         </div>
-        <div className="relative mx-auto max-w-2xl px-4">
-          <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">Bring order to your entity book <span className="text-bright">this week</span>.</h2>
+        <div className="relative mx-auto max-w-4xl px-4">
+          <h2 className="font-display text-3xl font-semibold tracking-tight sm:whitespace-nowrap sm:text-4xl">Bring order to your entity book <span className="text-bright">this week</span>.</h2>
           <p className="mt-3 text-white/60">14-day free trial · No credit card required</p>
           <div className="mt-6 flex justify-center gap-3">
             <Link href="/signup" className="inline-flex items-center justify-center rounded-lg bg-bright px-6 py-3 text-base font-semibold text-accent transition hover:bg-bright-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bright">Start free trial</Link>

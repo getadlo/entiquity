@@ -53,52 +53,55 @@ export default function HeroShowcase() {
 
           {/* Scene 2 — org chart */}
           <Scene active={i === 1}>
-            <svg viewBox="0 0 460 268" className="h-full w-full" role="img" aria-label="Ownership chart of a fund structure">
+            <svg viewBox="0 0 480 300" className="h-full w-full" role="img" aria-label="Ownership chart of a fund structure">
               {/* edges */}
-              {[
-                [230, 64, 110, 150], [230, 64, 230, 150], [230, 64, 350, 150],
-                [230, 20, 230, 32],
-              ].map(([x1, y1, x2, y2], k) => (
-                <path key={k} d={`M ${x1} ${y1} C ${x1} ${(y1 + y2) / 2}, ${x2} ${(y1 + y2) / 2}, ${x2} ${y2}`} fill="none" stroke="#B9C9C0" strokeWidth="1.4" />
+              <path d="M 240 44 C 240 61, 240 61, 240 78" fill="none" stroke="#B9C9C0" strokeWidth="1.4" />
+              {[[85, "M 240 126 C 240 161, 85 161, 85 196"], [240, "M 240 126 C 240 161, 240 161, 240 196"], [395, "M 240 126 C 240 161, 395 161, 395 196"]].map(([, d], k) => (
+                <path key={k} d={d as string} fill="none" stroke="#B9C9C0" strokeWidth="1.4" />
               ))}
-              {/* GP pill */}
+              {/* GP owner pill */}
               <g>
-                <rect x={155} y={-4} width={150} height={36} rx={18} fill="#fff" stroke="#8BEFBE" strokeWidth="1.4" />
-                <text x={230} y={13} textAnchor="middle" fontSize="10.5" fontWeight="600" fill="#0D1B16">Summit GP Partners</text>
-                <text x={230} y={25} textAnchor="middle" fontSize="8.5" fill="#71837B">General partner</text>
+                <rect x={155} y={8} width={170} height={36} rx={18} fill="#F5F8F6" stroke="#08312A" strokeWidth="1.3" strokeDasharray="4 3" />
+                <text x={240} y={23} textAnchor="middle" fontSize="10.5" fontWeight="600" fill="#0D1B16">Summit GP Partners</text>
+                <text x={240} y={36} textAnchor="middle" fontSize="8.5" fill="#71837B">Owner · General partner</text>
+              </g>
+              {/* GP badge on edge */}
+              <g transform="translate(240, 61)">
+                <rect x={-17} y={-9} width={34} height={18} rx={9} fill="#E4F7EC" />
+                <text textAnchor="middle" dy={3.5} fontSize="9" fontWeight="600" fill="#08312A">GP</text>
               </g>
               {/* fund */}
               <g>
-                <rect x={145} y={32} width={170} height={44} rx={9} fill="#08312A" />
-                <rect x={145} y={32} width={170} height={3.5} rx={1.75} fill="#00E47C" />
-                <text x={230} y={51} textAnchor="middle" fontSize="11" fontWeight="600" fill="#fff">Summit Capital Fund II, LP</text>
-                <text x={230} y={65} textAnchor="middle" fontSize="8.5" fill="#8BEFBE">Delaware · LP</text>
+                <rect x={150} y={78} width={180} height={48} rx={9} fill="#08312A" />
+                <rect x={150} y={78} width={180} height={3.5} rx={1.75} fill="#00E47C" />
+                <text x={240} y={99} textAnchor="middle" fontSize="11" fontWeight="600" fill="#fff">Summit Capital Fund II, LP</text>
+                <text x={240} y={114} textAnchor="middle" fontSize="8.5" fill="#8BEFBE">Delaware · LP</text>
               </g>
               {/* pct badges */}
-              {[[168, 112, "100%"], [230, 112, "85%"], [292, 112, "60%"]].map(([x, y, t]) => (
-                <g key={t as string} transform={`translate(${x}, ${y})`}>
-                  <rect x={-18} y={-9} width={36} height={17} rx={8.5} fill="#E4F7EC" />
+              {[[126, "100%"], [240, "85%"], [354, "60%"]].map(([x, t]) => (
+                <g key={t as string} transform={`translate(${x}, 161)`}>
+                  <rect x={-19} y={-9} width={38} height={18} rx={9} fill="#E4F7EC" />
                   <text textAnchor="middle" dy={3.5} fontSize="9" fontWeight="600" fill="#08312A">{t}</text>
                 </g>
               ))}
               {/* holdings */}
               {[
-                [110, "SCF II Holdings LLC", "Delaware · LLC"],
-                [230, "Northloop Realty LLC", "Illinois · LLC"],
-                [350, "Kestrel Property Co.", "UK · Foreign"],
+                [85, "SCF II Holdings LLC", "Delaware · LLC"],
+                [240, "Northloop Realty LLC", "Illinois · LLC"],
+                [395, "Kestrel Property Co.", "UK · Foreign"],
               ].map(([cx, name, meta]) => (
                 <g key={name as string}>
-                  <rect x={(cx as number) - 62} y={150} width={124} height={44} rx={9} fill="#fff" stroke="#E3E9E5" strokeWidth="1.4" />
-                  <rect x={(cx as number) - 62} y={150} width={124} height={3.5} rx={1.75} fill="#08312A" />
-                  <text x={cx as number} y={169} textAnchor="middle" fontSize="9.5" fontWeight="600" fill="#0D1B16">{name}</text>
-                  <text x={cx as number} y={183} textAnchor="middle" fontSize="8" fill="#71837B">{meta}</text>
+                  <rect x={(cx as number) - 65} y={196} width={130} height={46} rx={9} fill="#fff" stroke="#E3E9E5" strokeWidth="1.4" />
+                  <rect x={(cx as number) - 65} y={196} width={130} height={3.5} rx={1.75} fill="#08312A" />
+                  <text x={cx as number} y={216} textAnchor="middle" fontSize="9.5" fontWeight="600" fill="#0D1B16">{name}</text>
+                  <text x={cx as number} y={230} textAnchor="middle" fontSize="8" fill="#71837B">{meta}</text>
                 </g>
               ))}
               {/* chart tabs */}
-              <g transform="translate(230, 232)">
+              <g transform="translate(240, 272)">
                 {["Fund I", "Fund II", "Sunset JV"].map((t, k) => (
-                  <g key={t} transform={`translate(${(k - 1) * 76}, 0)`}>
-                    <rect x={-33} y={-11} width={66} height={22} rx={6} fill={k === 1 ? "#E4F7EC" : "#fff"} stroke={k === 1 ? "#08312A" : "#E3E9E5"} />
+                  <g key={t} transform={`translate(${(k - 1) * 80}, 0)`}>
+                    <rect x={-35} y={-12} width={70} height={24} rx={7} fill={k === 1 ? "#E4F7EC" : "#fff"} stroke={k === 1 ? "#08312A" : "#E3E9E5"} />
                     <text textAnchor="middle" dy={3.5} fontSize="9" fontWeight="600" fill={k === 1 ? "#08312A" : "#71837B"}>{t}</text>
                   </g>
                 ))}
