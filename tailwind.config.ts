@@ -19,6 +19,7 @@ const config: Config = {
         bright: {
           DEFAULT: "#00E47C",   // electric green — highlights on dark surfaces
           soft: "#66F2AE",
+          deep: "#00A65B",      // same green, deepened for large text on white
         },
         line: "#E3E9E5",        // subtle green-gray borders
         canvas: "#F5F8F6",      // app background wash
