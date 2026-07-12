@@ -8,10 +8,10 @@ import { cn } from "@/lib/utils";
  * 4) a cursor clicks a node and the detail panel opens.
  */
 const STEPS = [
-  { key: "drop", label: "Drop in any org chart", sub: "PDF, image, or PowerPoint" },
-  { key: "scan", label: "AI reads the structure", sub: "Entities, owners, percentages" },
-  { key: "build", label: "The chart builds itself", sub: "Reviewed by you, then saved" },
-  { key: "click", label: "Click anything", sub: "Full detail on every box" },
+  { key: "drop", label: "1 · Drop in your org chart", sub: "PDF, image, or PowerPoint — the file you already have" },
+  { key: "scan", label: "2 · Our AI scans it", sub: "Every entity, owner, and ownership percentage" },
+  { key: "build", label: "3 · It lands in your dashboard", sub: "A fully interactive chart, built in seconds" },
+  { key: "click", label: "4 · See details, make updates", sub: "Click any box to view, edit, and export" },
 ] as const;
 
 // node geometry (viewBox 560 x 330)
@@ -76,7 +76,7 @@ export default function OrgChartDemo() {
             <span className="ml-3 text-sm font-medium text-white/80">Org chart · <span className="text-bright">Fund II</span></span>
           </div>
           <span className={cn("badge transition-colors duration-500", stage >= 2 ? "bg-bright/15 text-bright" : "bg-white/10 text-white/60")}>
-            {stage < 1 ? "Waiting for file" : stage < 2 ? "AI reading…" : stage < 3 ? "Building chart" : "Live · editable"}
+            {stage < 1 ? "Waiting for file" : stage < 2 ? "Our AI is reading…" : stage < 3 ? "Building your chart" : "Live · editable"}
           </span>
         </div>
 
@@ -132,8 +132,8 @@ export default function OrgChartDemo() {
                   <g key={k} style={{ transformOrigin: `${cx(k)}px ${n.y + n.h / 2}px` }}
                     className={cn("transition-all duration-500", on ? "scale-100 opacity-100" : "scale-75 opacity-0")}>
                     <rect x={n.x} y={n.y} width={n.w} height={n.h} rx={n.pill ? n.h / 2 : 9}
-                      fill={sel ? "#00E47C" : n.dark ? "#08312A" : "rgba(255,255,255,0.96)"}
-                      stroke={sel ? "#00E47C" : n.pill ? "rgba(139,239,190,0.7)" : n.dark ? "#00E47C" : "rgba(255,255,255,0.25)"}
+                      fill={sel ? "#00E47C" : n.dark ? "#08312A" : n.pill ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.96)"}
+                      stroke={sel ? "#00E47C" : n.pill ? "rgba(139,239,190,0.55)" : n.dark ? "#00E47C" : "rgba(255,255,255,0.25)"}
                       strokeWidth={n.dark || sel ? 1.6 : 1.2} />
                     {n.dark && <rect x={n.x} y={n.y} width={n.w} height={3.5} rx={1.75} fill="#00E47C" />}
                     <text x={cx(k)} y={n.y + (n.sub ? n.h / 2 - 2 : n.h / 2 + 4)} textAnchor="middle" fontSize="10.5" fontWeight="600"
@@ -144,7 +144,6 @@ export default function OrgChartDemo() {
                   </g>
                 );
               })}
-              {/* pills need light fill fix: draw pill labels over dark background */}
             </svg>
 
             {/* cursor */}
@@ -177,7 +176,7 @@ export default function OrgChartDemo() {
         {/* assistant strip */}
         <div className="relative border-t border-white/10 px-4 py-3 text-xs text-white/70">
           <span className="font-medium text-bright">entiquity Assistant:</span>{" "}
-          {stage < 2 ? "Drop in a chart and I'll do the rest." : stage < 3 ? "Matching names against your existing entities…" : "Chart saved — every box is now a live record you can edit, document, and export."}
+          {stage < 2 ? "Drop in a chart and our AI does the rest." : stage < 3 ? "Our AI is matching names against your existing entities…" : "Chart saved to your dashboard — every box is now a live record you can edit, document, and export."}
         </div>
       </div>
 

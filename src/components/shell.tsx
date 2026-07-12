@@ -18,9 +18,9 @@ const NAV = [
   { href: "/settings", label: "Settings", icon: "M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM10 3v2M10 15v2M3 10h2M15 10h2M5 5l1.4 1.4M13.6 13.6L15 15M15 5l-1.4 1.4M6.4 13.6L5 15" },
 ];
 
-export function Logo({ light }: { light?: boolean }) {
+export function Logo({ light, className = "" }: { light?: boolean; className?: string }) {
   return (
-    <span className={cn("font-display text-xl font-medium lowercase tracking-tight", light ? "text-bright" : "text-accent")}>
+    <span className={cn("font-display text-xl font-medium lowercase tracking-tight", light ? "text-bright" : "text-accent", className)}>
       entiquity
     </span>
   );

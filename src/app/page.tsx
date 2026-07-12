@@ -38,7 +38,7 @@ export default function Home() {
       {/* Nav */}
       <header className="sticky top-0 z-30 border-b border-white/10 bg-accent">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link href="/"><Logo light /></Link>
+          <Link href="/"><Logo light className="text-[23px]" /></Link>
           <nav className="hidden items-center gap-8 text-sm font-medium text-white/80 md:flex">
             <a href="#product" className="transition hover:text-white">Product</a>
             <a href="#ai" className="transition hover:text-white">AI</a>
@@ -59,8 +59,8 @@ export default function Home() {
             <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 text-xs font-medium text-ink-soft">
               <span className="h-1.5 w-1.5 rounded-full bg-bright" /> The modern operating system for entity management
             </p>
-            <h1 className="font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
-              Entity management,<br /><em className="text-bright-deep">intelligently organized.</em>
+            <h1 className="font-display text-4xl font-semibold leading-[1.1] tracking-tight text-accent sm:text-5xl">
+              Entity management,<br /><em>intelligently organized.</em>
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-soft">
               The AI-powered workspace where fund sponsors, real estate teams, and legal
@@ -68,7 +68,7 @@ export default function Home() {
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link href="/signup" className="btn-primary px-6 py-3 text-base">Start free trial</Link>
-              <Link href="/signup?demo=1" className="btn-secondary px-6 py-3 text-base">Request demo</Link>
+              <Link href="/signup?demo=1" className="inline-flex items-center justify-center rounded-lg bg-bright px-6 py-3 text-base font-semibold text-white transition hover:bg-bright-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">Request demo</Link>
             </div>
             <p className="mt-4 text-xs text-ink-faint">14-day trial · No credit card required · Cancel anytime</p>
           </div>
@@ -83,7 +83,7 @@ export default function Home() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <p className="text-xs font-semibold uppercase tracking-widest text-accent">The platform</p>
           <h2 className="mt-2 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-            Every entity. Every filing. Every document.<br className="hidden sm:block" /> One <span className="text-bright-deep">intelligent</span> workspace.
+            Every entity. Every filing. Every document.<br className="hidden sm:block" /> One <span className="text-accent">intelligent</span> workspace.
           </h2>
           <p className="mt-3 max-w-2xl text-ink-soft">
             Built for private equity fund sponsors, real estate platforms, business operations,
@@ -110,13 +110,16 @@ export default function Home() {
       <section className="bg-accent py-20 text-white">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-bright">AI org chart import</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-bright">Powered by our AI</p>
             <h2 className="mt-2 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-              From PDF to a living org chart <span className="text-bright">in under a minute</span>.
+              Instant Org Chart Creation.
             </h2>
+            <p className="mt-3 text-lg text-white/80">
+              From your file to a living org chart <span className="text-bright">in under a minute</span>.
+            </p>
             <p className="mt-3 text-white/70">
-              Drop in the structure chart you already have. AI reads every box, owner, and
-              percentage — then builds a fully editable chart you review before saving. One chart per fund, as many as you need.
+              Drop in the structure chart you already have. Our AI reads every box, owner, and
+              percentage — then builds a fully interactive chart in your dashboard, reviewed by you before it saves. One chart per fund, as many as you need.
             </p>
           </div>
           <div className="mt-10">
@@ -128,7 +131,7 @@ export default function Home() {
       {/* AI */}
       <section id="ai" className="py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="grid items-start gap-12 lg:grid-cols-2">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-accent">entiquity Assistant</p>
               <h2 className="mt-2 font-display text-3xl font-semibold tracking-tight">
@@ -266,9 +269,17 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="bg-accent py-20 text-center text-white">
-        <div className="mx-auto max-w-2xl px-4">
-          <h2 className="font-display text-3xl font-semibold tracking-tight">Bring order to your entity book <span className="text-bright">this week</span>.</h2>
+      <section className="relative overflow-hidden bg-accent py-24 text-center text-white">
+        <div className="pointer-events-none absolute inset-0"
+          style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "36px 36px" }} />
+        <div className="pointer-events-none absolute -left-32 -top-32 h-80 w-80 rounded-full bg-bright/15 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 -right-24 h-96 w-96 rounded-full bg-bright/10 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-10 left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-display text-[11rem] font-semibold lowercase leading-none tracking-tight text-white/[0.04]">
+          entiquity
+        </div>
+        <div className="relative mx-auto max-w-2xl px-4">
+          <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">Bring order to your entity book <span className="text-bright">this week</span>.</h2>
+          <p className="mt-3 text-white/60">14-day free trial · No credit card required</p>
           <div className="mt-6 flex justify-center gap-3">
             <Link href="/signup" className="inline-flex items-center justify-center rounded-lg bg-bright px-6 py-3 text-base font-semibold text-accent transition hover:bg-bright-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bright">Start free trial</Link>
             <Link href="/signup?demo=1" className="inline-flex items-center justify-center rounded-lg border border-white/25 px-6 py-3 text-base font-medium text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bright">Request demo</Link>
@@ -286,8 +297,8 @@ export default function Home() {
               <a href="#security" className="hover:text-ink">Security</a>
               <a href="https://www.linkedin.com/company/entiquity" target="_blank" rel="noopener noreferrer"
                 aria-label="entiquity on LinkedIn"
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-line text-ink-soft transition hover:border-accent hover:bg-accent hover:text-bright">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                className="flex h-8 w-8 items-center justify-center rounded-[6px] bg-[#0A66C2] text-white transition hover:bg-[#004182]">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
                   <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z" />
                 </svg>
               </a>
